@@ -1,4 +1,6 @@
-﻿using BifrostRemoteDesktop.BusinessLogic.UIControl;
+﻿using BifrostRemoteDesktop.BusinessLogic;
+using BifrostRemoteDesktop.BusinessLogic.Controls;
+using BifrostRemoteDesktop.BusinessLogic.UIControl;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -34,10 +36,6 @@ namespace BifrostRemoteDesktop
         public MainPage()
         {
             this.InitializeComponent();
-            this.DataContext = this;
-
-            NativeUIController controller = new NativeUIController();
-            controller.RetrieveMessage();
         }
 
         public bool MouseRightButton
@@ -46,7 +44,7 @@ namespace BifrostRemoteDesktop
             set
             {
                 _mouseRightButton = value;
-                NotifyPropertyChanged(nameof(_mouseRightButton));
+                NotifyPropertyChanged(nameof(MouseRightButton));
             }
         }
         public bool MouseLeftButton
@@ -55,7 +53,7 @@ namespace BifrostRemoteDesktop
             set
             {
                 _mouseLeftButton = value;
-                NotifyPropertyChanged(nameof(_mouseLeftButton));
+                NotifyPropertyChanged(nameof(MouseLeftButton));
             }
         }
 
@@ -65,7 +63,7 @@ namespace BifrostRemoteDesktop
             set
             {
                 _mouseX = value;
-                NotifyPropertyChanged(nameof(_mouseX));
+                NotifyPropertyChanged(nameof(MouseX));
             }
         }
         public double MouseY
@@ -74,7 +72,7 @@ namespace BifrostRemoteDesktop
             set
             {
                 _mouseY = value;
-                NotifyPropertyChanged(nameof(_mouseY));
+                NotifyPropertyChanged(nameof(MouseY));
             }
         }
 
@@ -95,7 +93,6 @@ namespace BifrostRemoteDesktop
             MouseX = point.Position.X;
             MouseY = point.Position.Y;
             //throw new Exception("YOU DON GOOFED!");
-
         }
 
         private void Canvas_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -103,7 +100,6 @@ namespace BifrostRemoteDesktop
             var point = e.GetCurrentPoint((UIElement)sender);
             MouseRightButton = point.Properties.IsRightButtonPressed;
             MouseLeftButton = point.Properties.IsLeftButtonPressed;
-
         }
 
         private void Canvas_PointerReleased(object sender, PointerRoutedEventArgs e)

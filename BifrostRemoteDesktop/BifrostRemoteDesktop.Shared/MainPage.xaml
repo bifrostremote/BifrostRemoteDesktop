@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    DataContext="{Binding }">
+    DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel PointerMoved="Canvas_PointerMoved" 
@@ -17,7 +17,7 @@
             </Canvas>
             <StackPanel Orientation="Horizontal" >
                 <TextBlock Text="M.L: "/>
-                <TextBlock x:Name="MouseButtonLeft_TextBox" Text="{Binding MouseLeftButton}"/>
+                <TextBlock x:Name="MouseButtonLeft_TextBox" Text="{Binding MouseLeftButton }"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="M.R: "/>
@@ -29,7 +29,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="M.Y: "/>
-                <TextBlock x:Name="MousePositionY_TextBox" Text="{Binding MouseY}"/>
+                <TextBlock x:Name="MousePositionY_TextBox" Text="{ Binding MouseY }"/>
             </StackPanel>
         </StackPanel>
     </Grid>

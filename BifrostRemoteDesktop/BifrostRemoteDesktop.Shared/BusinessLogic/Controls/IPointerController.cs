@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BifrostRemoteDesktop.BusinessLogic
 {
-    public interface IMouseController
+    public interface IPointerController
     {
         bool CanSetCursorPosition { get; }
         void SetCursorPosition(int x, int y);

@@ -133,8 +133,8 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusinessLogic\Controls\MouseController.cs" />
-    <Compile Include="BusinessLogic\Controls\MouseProvider.UWP.cs" />
+    <Compile Include="BusinessLogic\Controls\UWPPointerController.cs" />
+    <Compile Include="BusinessLogic\Controls\PointerProvider.UWP.cs" />
     <Compile Include="BusinessLogic\UIControl\NativeUIController.UWP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

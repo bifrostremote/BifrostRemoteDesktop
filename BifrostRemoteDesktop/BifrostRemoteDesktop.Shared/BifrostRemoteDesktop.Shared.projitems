@@ -18,8 +18,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controls\IMouseController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controls\MouseProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controls\IPointerController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controls\PointerProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\LPPoint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\UIControl\NativeUIController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
