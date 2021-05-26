@@ -1,13 +1,16 @@
 ﻿using BifrostRemoteDesktop.BusinessLogic;
 using BifrostRemoteDesktop.BusinessLogic.Controls;
 using BifrostRemoteDesktop.BusinessLogic.UIControl;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -33,9 +36,12 @@ namespace BifrostRemoteDesktop
         private bool _mouseRightButton = false;
         private bool _mouseLeftButton = false;
 
+        public TcpClient tcp = new TcpClient();
+
         public MainPage()
         {
             this.InitializeComponent();
+            tcp.Connect("127.0.0.1", 25565);
         }
 
         public bool MouseRightButton
@@ -84,6 +90,11 @@ namespace BifrostRemoteDesktop
             }
         }
 
+        public class PointerMovedEvent
+        {
+            public double X { get; set; }
+            public double y { get; set; }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -92,7 +103,16 @@ namespace BifrostRemoteDesktop
             var point = e.GetCurrentPoint((UIElement)sender);
             MouseX = point.Position.X;
             MouseY = point.Position.Y;
-            //throw new Exception("YOU DON GOOFED!");
+
+            JsonConvert.SerializeObject(new PointerMovedEvent()
+            {
+                X = MouseX,
+                y = MouseY
+            });
+
+            //TODO: SEND TYPE AND OBJECT
+            //var a = Type.GetType();
+            //tcp.Client.Send();
         }
 
         private void Canvas_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -100,6 +120,7 @@ namespace BifrostRemoteDesktop
             var point = e.GetCurrentPoint((UIElement)sender);
             MouseRightButton = point.Properties.IsRightButtonPressed;
             MouseLeftButton = point.Properties.IsLeftButtonPressed;
+
         }
 
         private void Canvas_PointerReleased(object sender, PointerRoutedEventArgs e)
@@ -107,7 +128,21 @@ namespace BifrostRemoteDesktop
             var point = e.GetCurrentPoint((UIElement)sender);
             MouseRightButton = point.Properties.IsRightButtonPressed;
             MouseLeftButton = point.Properties.IsLeftButtonPressed;
-        
+
         }
+
+
+
     }
+
+    public class InputSender
+    {
+
+    }
+
+    public class InputReceiver
+    {
+
+    }
+
 }

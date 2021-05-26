@@ -18,16 +18,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controls\IPointerController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controls\PointerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\IPointerController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\PointerProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\LPPoint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\UIControl\NativeUIController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="$(MSBuildThisFileDirectory)MainPage.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
