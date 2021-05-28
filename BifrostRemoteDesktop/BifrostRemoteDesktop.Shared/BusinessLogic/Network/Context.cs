@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BifrostRemote.Network
 {
-    class UdpSocket
+    public static class Context
     {
+        public const int INPUT_TCP_PORT = 65123;
     }
 }

@@ -21,6 +21,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\IPointerController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\PointerProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\LPPoint.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\PointerMovedEventDetail.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\Context.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\InputNetworkReceiver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\InputNetworkTransmitter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\UIControl\NativeUIController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

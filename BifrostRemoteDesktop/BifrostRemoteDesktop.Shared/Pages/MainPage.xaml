@@ -29,7 +29,12 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="M.Y: "/>
-                <TextBlock x:Name="MousePositionY_TextBox" Text="{ Binding MouseY }"/>
+                <TextBlock x:Name="MousePositionY_TextBox" Text="{Binding MouseY}"/>
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Select Endpoint"/>
+                <ComboBox Name="SelectEndpointCombobox" ItemsSource="{Binding AvailableEndpoints}" SelectedItem="{Binding SelectedEndpoint, Mode=TwoWay}"/>
+                <Button Content="Connect" Click="Connect_Click"/>
             </StackPanel>
         </StackPanel>
     </Grid>

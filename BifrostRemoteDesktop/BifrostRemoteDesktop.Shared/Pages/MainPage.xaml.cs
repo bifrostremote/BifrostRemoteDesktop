@@ -1,13 +1,18 @@
-﻿using BifrostRemoteDesktop.BusinessLogic;
+﻿using BifrostRemote.Network;
+using BifrostRemoteDesktop.BusinessLogic;
 using BifrostRemoteDesktop.BusinessLogic.Controls;
+using BifrostRemoteDesktop.BusinessLogic.Models;
+using BifrostRemoteDesktop.BusinessLogic.Network;
 using BifrostRemoteDesktop.BusinessLogic.UIControl;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -37,43 +42,34 @@ namespace BifrostRemoteDesktop
         private double _mouseY;
         private bool _mouseRightButton = false;
         private bool _mouseLeftButton = false;
+        private string _selectedEndpoint;
 
-        private TcpClient tcp = new TcpClient();
+        private InputNetworkTransmitter _inputSender;
+
+        public ObservableCollection<string> AvailableEndpoints { get; set; }
+
         public MainPage()
         {
+            LoadAvailableEndpoints();
             this.InitializeComponent();
 
+            new Thread(StartReceiver).Start();
 
-            new Thread(RunServer).Start();
             Thread.Sleep(3000);
-            tcp.Connect("127.0.0.1", 25565);
+
+            _inputSender = new InputNetworkTransmitter();
+
+
         }
 
-        public static void RunServer()
+
+        public string SelectedEndpoint
         {
-            var listener = new TcpListener(25565);
-            listener.Start();
-            byte[] buffer = new byte[256];
-            string data = "";
-            while (true)
+            get => _selectedEndpoint;
+            set
             {
-                var server = listener.AcceptTcpClient();
-                var stream = server.GetStream();
-                int i;
-
-                while ((i = stream.Read(buffer, 0, buffer.Length)) != 0)
-                {
-                    // Translate data bytes to a ASCII string.
-                    data = Encoding.ASCII.GetString(buffer, 0, i);
-                    Debug.WriteLine("Received: {0}", data);
-
-                    // Process the data sent by the client.
-                    data = data.ToUpper();
-
-                    byte[] msg = Encoding.ASCII.GetBytes(data);
-                }
-
-                server.Close();
+                _selectedEndpoint = value;
+                NotifyPropertyChanged(nameof(SelectedEndpoint));
             }
         }
 
@@ -123,13 +119,69 @@ namespace BifrostRemoteDesktop
             }
         }
 
-        public class PointerMovedEvent
+
+        private void LoadAvailableEndpoints()
         {
-            public double X { get; set; }
-            public double Y { get; set; }
+            // TODO: Load endpoints from database.
+            AvailableEndpoints = new ObservableCollection<string>()
+            {
+                "127.0.0.1"
+            };
+        }
+
+        const char START_OF_TEXT_CHR = '\x02';
+        const char END_OF_TEXT_CHR = '\x03';
+
+        public static void StartReceiver()
+        {
+            var localhost = IPAddress.Parse("127.0.0.1");
+            var listener = new TcpListener(localhost, Context.INPUT_TCP_PORT);
+
+            listener.Start();
+
+            byte[] buffer = new byte[256];
+            string data;
+
+            while (true)
+            {
+                var receiver = listener.AcceptTcpClient();
+                var stream = receiver.GetStream();
+                int i;
+
+                while ((i = stream.Read(buffer, 0, buffer.Length)) != 0)
+                {
+                    data = Encoding.UTF8.GetString(buffer, 0, i);
+
+                    var startCharIndex = data.IndexOf(START_OF_TEXT_CHR);
+                    var endCharIndex = data.IndexOf(END_OF_TEXT_CHR, startCharIndex);
+
+                    if (startCharIndex == -1 || endCharIndex == -1)
+                    {
+                        break;
+                    }
+
+                    // TODO: FIX ME
+
+                    var parts = data.Split(';', 2);
+                    var type = Type.GetType(parts[0]);
+                    var obj = JsonConvert.DeserializeObject(parts[1], type);
+
+                    switch (obj)
+                    {
+                        case PointerMovedEventDetail detail:
+                            Debug.WriteLine(detail.X + "," + detail.Y);
+                            break;
+                    }
+
+                }
+
+                receiver.Close();
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        int cnt = 0;
 
         private void Canvas_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
@@ -137,15 +189,21 @@ namespace BifrostRemoteDesktop
             MouseX = point.Position.X;
             MouseY = point.Position.Y;
 
-            JsonConvert.SerializeObject(new PointerMovedEvent()
+            var json = JsonConvert.SerializeObject(new PointerMovedEventDetail()
             {
                 X = MouseX,
                 Y = MouseY
             });
 
-            //TODO: SEND TYPE AND OBJECT
-            //var a = Type.GetType();
-            tcp.Client.Send(Encoding.ASCII.GetBytes(String.Format("{0},{1}", MouseX.ToString(), MouseY.ToString())));
+            var message = string.Format("{0};{1};{2},{3}",
+                START_OF_TEXT_CHR,
+                typeof(PointerMovedEventDetail).FullName,
+                json,
+                END_CHR);
+
+            _inputSender.Send(message);
+
+
         }
 
         private void Canvas_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -164,18 +222,13 @@ namespace BifrostRemoteDesktop
 
         }
 
-
-
-    }
-
-    public class InputSender
-    {
-
-    }
-
-    public class InputReceiver
-    {
+        private void Connect_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedEndpoint != null)
+            {
+                _inputSender.Connect(SelectedEndpoint);
+            }
+        }
 
     }
-
 }
