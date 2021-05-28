@@ -1,6 +1,7 @@
 ﻿using BifrostRemote.Network;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Net.Sockets;
 using System.Text;
 
@@ -49,8 +50,8 @@ namespace BifrostRemoteDesktop.BusinessLogic.Network
 
                 _tcp.Close();
             }
-
             _tcp.Connect(hostname, port: Context.INPUT_TCP_PORT);
+
         }
 
         public void Disconnect()

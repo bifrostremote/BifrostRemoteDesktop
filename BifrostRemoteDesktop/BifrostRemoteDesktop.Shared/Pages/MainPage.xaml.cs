@@ -1,33 +1,19 @@
 ﻿using BifrostRemote.Network;
-using BifrostRemoteDesktop.BusinessLogic;
-using BifrostRemoteDesktop.BusinessLogic.Controls;
 using BifrostRemoteDesktop.BusinessLogic.Models;
 using BifrostRemoteDesktop.BusinessLogic.Network;
-using BifrostRemoteDesktop.BusinessLogic.UIControl;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading;
-using Windows.Devices.Input;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -38,6 +24,9 @@ namespace BifrostRemoteDesktop
     /// </summary>
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
+        private const char START_OF_TEXT_CHR = '\x02';
+        private const char END_OF_TEXT_CHR = '\x03';
+
         private double _mouseX;
         private double _mouseY;
         private bool _mouseRightButton = false;
@@ -45,22 +34,6 @@ namespace BifrostRemoteDesktop
         private string _selectedEndpoint;
 
         private InputNetworkTransmitter _inputSender;
-
-        public ObservableCollection<string> AvailableEndpoints { get; set; }
-
-        public MainPage()
-        {
-            LoadAvailableEndpoints();
-            this.InitializeComponent();
-
-            new Thread(StartReceiver).Start();
-
-            Thread.Sleep(3000);
-
-            _inputSender = new InputNetworkTransmitter();
-
-
-        }
 
 
         public string SelectedEndpoint
@@ -111,14 +84,28 @@ namespace BifrostRemoteDesktop
             }
         }
 
-        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        public ObservableCollection<string> AvailableEndpoints { get; set; }
+        public bool IsInputTransmitterConnected { get; set; }
+
+        public MainPage()
         {
-            if (PropertyChanged != null)
+            LoadAvailableEndpoints();
+            this.InitializeComponent();
+
+            new Thread(StartReceiver).Start();
+
+            _inputSender = new InputNetworkTransmitter();
+
+            if (AvailableEndpoints.Count > 0)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                SelectedEndpoint = AvailableEndpoints[0];
             }
         }
 
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         private void LoadAvailableEndpoints()
         {
@@ -129,9 +116,6 @@ namespace BifrostRemoteDesktop
             };
         }
 
-        const char START_OF_TEXT_CHR = '\x02';
-        const char END_OF_TEXT_CHR = '\x03';
-
         public static void StartReceiver()
         {
             var localhost = IPAddress.Parse("127.0.0.1");
@@ -140,7 +124,7 @@ namespace BifrostRemoteDesktop
             listener.Start();
 
             byte[] buffer = new byte[256];
-            string data;
+            string data = "";
 
             while (true)
             {
@@ -150,29 +134,30 @@ namespace BifrostRemoteDesktop
 
                 while ((i = stream.Read(buffer, 0, buffer.Length)) != 0)
                 {
-                    data = Encoding.UTF8.GetString(buffer, 0, i);
+                    data += Encoding.UTF8.GetString(buffer, 0, i);
 
-                    var startCharIndex = data.IndexOf(START_OF_TEXT_CHR);
-                    var endCharIndex = data.IndexOf(END_OF_TEXT_CHR, startCharIndex);
+                    var startCharIndex = data.IndexOf(START_OF_TEXT_CHR) + 1;
+                    var endCharIndex = data.IndexOf(END_OF_TEXT_CHR, startCharIndex)-1;
 
+                    //Check data for full package.
                     if (startCharIndex == -1 || endCharIndex == -1)
                     {
                         break;
                     }
 
-                    // TODO: FIX ME
+                    var package = data.Substring(startCharIndex, endCharIndex - startCharIndex);
+                    data = "";
+                    var parts = package.Split(';', 3);
 
-                    var parts = data.Split(';', 2);
-                    var type = Type.GetType(parts[0]);
-                    var obj = JsonConvert.DeserializeObject(parts[1], type);
+                    var objType = Type.GetType(parts[0]);
+                    var obj = JsonConvert.DeserializeObject(parts[1], objType);
 
                     switch (obj)
                     {
                         case PointerMovedEventDetail detail:
-                            Debug.WriteLine(detail.X + "," + detail.Y);
+                            Debug.WriteLine(string.Format("[{0}]:{1},{2}", parts[2], detail.X, detail.Y));
                             break;
                     }
-
                 }
 
                 receiver.Close();
@@ -181,8 +166,7 @@ namespace BifrostRemoteDesktop
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        int cnt = 0;
-
+        volatile int sendPackageCount = 0;
         private void Canvas_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
             var point = e.GetCurrentPoint((UIElement)sender);
@@ -195,15 +179,14 @@ namespace BifrostRemoteDesktop
                 Y = MouseY
             });
 
-            var message = string.Format("{0};{1};{2},{3}",
+            var message = string.Format("{0}{1};{2};{4}{3}",
                 START_OF_TEXT_CHR,
                 typeof(PointerMovedEventDetail).FullName,
                 json,
-                END_CHR);
+                END_OF_TEXT_CHR,
+                sendPackageCount++);
 
             _inputSender.Send(message);
-
-
         }
 
         private void Canvas_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -211,7 +194,6 @@ namespace BifrostRemoteDesktop
             var point = e.GetCurrentPoint((UIElement)sender);
             MouseRightButton = point.Properties.IsRightButtonPressed;
             MouseLeftButton = point.Properties.IsLeftButtonPressed;
-
         }
 
         private void Canvas_PointerReleased(object sender, PointerRoutedEventArgs e)
@@ -219,7 +201,6 @@ namespace BifrostRemoteDesktop
             var point = e.GetCurrentPoint((UIElement)sender);
             MouseRightButton = point.Properties.IsRightButtonPressed;
             MouseLeftButton = point.Properties.IsLeftButtonPressed;
-
         }
 
         private void Connect_Click(object sender, RoutedEventArgs e)
@@ -227,8 +208,10 @@ namespace BifrostRemoteDesktop
             if (SelectedEndpoint != null)
             {
                 _inputSender.Connect(SelectedEndpoint);
+                IsInputTransmitterConnected = _inputSender.Connected;
+
+
             }
         }
-
     }
 }
