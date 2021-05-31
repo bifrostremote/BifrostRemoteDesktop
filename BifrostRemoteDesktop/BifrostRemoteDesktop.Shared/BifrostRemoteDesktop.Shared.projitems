@@ -29,7 +29,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\Context.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\CommandReceiver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\CommandTransmitter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\UIControl\NativeUIController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\TransmitterClient.xaml.cs">
       <DependentUpon>TransmitterClient.xaml</DependentUpon>
     </Compile>
