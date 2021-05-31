@@ -20,18 +20,22 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\IPointerController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\PointerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Factories\CommandFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\ICommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\ISystemController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\RemoteControlCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\LPPoint.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\PointerMovedEventDetail.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\MovePointerCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\Context.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\InputNetworkReceiver.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\InputNetworkTransmitter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\CommandReceiver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\CommandTransmitter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\UIControl\NativeUIController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\TransmitterClient.xaml.cs">
+      <DependentUpon>TransmitterClient.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Pages\TransmitterClient.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
