@@ -17,23 +17,27 @@
             </Canvas>
             <StackPanel Orientation="Horizontal" >
                 <TextBlock Text="M.L: "/>
-                <TextBlock x:Name="MouseButtonLeft_TextBox" Text="{Binding MouseLeftButton }"/>
+                <TextBlock Text="{Binding MouseLeftButtonPressed }"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="M.R: "/>
-                <TextBlock x:Name="MouseButtonRight_TextBox" Text="{Binding MouseRightButton}"/>
+                <TextBlock Text="{Binding MouseRightButtonPressed }"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="M.M: "/>
+                <TextBlock Text ="{Binding MouseMiddleButtonPressed }"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="M.X: "/>
-                <TextBlock x:Name="MousePositionX_TextBox" Text="{Binding MouseX}"/>
+                <TextBlock Text="{Binding MouseX}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="M.Y: "/>
-                <TextBlock x:Name="MousePositionY_TextBox" Text="{Binding MouseY}"/>
+                <TextBlock Text="{Binding MouseY}"/>
             </StackPanel>
             <StackPanel>
                 <TextBlock Text="Select Endpoint"/>
-                <ComboBox Name="SelectEndpointCombobox" ItemsSource="{Binding AvailableEndpoints}" SelectedItem="{Binding SelectedEndpoint, Mode=TwoWay}"/>
+                <ComboBox ItemsSource="{Binding AvailableEndpoints}" SelectedItem="{Binding SelectedEndpoint, Mode=TwoWay}"/>
                 <Button Content="Connect" Click="Connect_Click"/>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Connected:"/>

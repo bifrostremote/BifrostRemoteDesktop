@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BifrostRemoteDesktop.BusinessLogic.Models.Commands
 {
-    public abstract class RemoteControlCommand : ICommand
+    public abstract class RemoteControlCommand<T> : ICommand where T : RemoteControlCommandArgs
     {
         protected readonly ISystemController _systemController;
 
@@ -14,5 +12,13 @@ namespace BifrostRemoteDesktop.BusinessLogic.Models.Commands
         }
 
         public abstract void Execute();
+
+        public Type ArgumentType
+        {
+            get
+            {
+                return typeof(T);
+            }
+        }
     }
 }

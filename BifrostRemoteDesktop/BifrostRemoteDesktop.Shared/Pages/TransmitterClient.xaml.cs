@@ -29,12 +29,13 @@ namespace BifrostRemoteDesktop
 
         private double _mouseX;
         private double _mouseY;
-        private bool _mouseRightButton = false;
-        private bool _mouseLeftButton = false;
+        private bool _mouseRightButtonPressed = false;
+        private bool _mouseLeftButtonPressed = false;
+        private bool _mouseMiddleButtonPressed;
+
         private string _selectedEndpoint;
 
-        private CommandTransmitter _inputSender;
-
+        private CommandTransmitter _commandTransmitter;
 
         public string SelectedEndpoint
         {
@@ -46,22 +47,32 @@ namespace BifrostRemoteDesktop
             }
         }
 
-        public bool MouseRightButton
+        public bool MouseRightButtonPressed
         {
-            get => _mouseRightButton;
+            get => _mouseRightButtonPressed;
             set
             {
-                _mouseRightButton = value;
-                NotifyPropertyChanged(nameof(MouseRightButton));
+                _mouseRightButtonPressed = value;
+                NotifyPropertyChanged(nameof(MouseRightButtonPressed));
             }
         }
-        public bool MouseLeftButton
+        public bool MouseLeftButtonPressed
         {
-            get => _mouseLeftButton;
+            get => _mouseLeftButtonPressed;
             set
             {
-                _mouseLeftButton = value;
-                NotifyPropertyChanged(nameof(MouseLeftButton));
+                _mouseLeftButtonPressed = value;
+                NotifyPropertyChanged(nameof(MouseLeftButtonPressed));
+            }
+        }
+
+        public bool MouseMiddleButtonPressed
+        {
+            get => _mouseMiddleButtonPressed;
+            set
+            {
+                _mouseMiddleButtonPressed = value;
+                NotifyPropertyChanged(nameof(MouseMiddleButtonPressed));
             }
         }
 
@@ -87,6 +98,8 @@ namespace BifrostRemoteDesktop
         public ObservableCollection<string> AvailableEndpoints { get; set; }
         public bool IsInputTransmitterConnected { get; set; }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public MainPage()
         {
             LoadAvailableEndpoints();
@@ -94,7 +107,7 @@ namespace BifrostRemoteDesktop
 
             //new Thread(InputNetworkReceiver.StartReceiver).Start();
 
-            _inputSender = new CommandTransmitter();
+            _commandTransmitter = new CommandTransmitter();
 
             if (AvailableEndpoints.Count > 0)
             {
@@ -116,44 +129,56 @@ namespace BifrostRemoteDesktop
             };
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        volatile int sendPackageCount = 0;
         private void Canvas_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
             Windows.UI.Input.PointerPoint point = e.GetCurrentPoint((UIElement)sender);
             MouseX = point.Position.X;
             MouseY = point.Position.Y;
 
-            string message = $"{CommandType.MovePointer};{MouseX};{MouseY}";
-
-            _inputSender.Send(message);
+            SendMovePointerCommand(new MovePointerCommandArgs() { TargetX = MouseX, TargetY = MouseY });
         }
 
         private void Canvas_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             Windows.UI.Input.PointerPoint point = e.GetCurrentPoint((UIElement)sender);
-            MouseRightButton = point.Properties.IsRightButtonPressed;
-            MouseLeftButton = point.Properties.IsLeftButtonPressed;
+            MouseRightButtonPressed = point.Properties.IsRightButtonPressed;
+            MouseLeftButtonPressed = point.Properties.IsLeftButtonPressed;
+            MouseMiddleButtonPressed = point.Properties.IsMiddleButtonPressed;
+
+            SendUpdatePointerStateCommand(new PointerUpdateStateCommandArgs()
+            {
+                IsLeftPointerButtonPressed = MouseLeftButtonPressed,
+                IsRightPointerButtonPressed = MouseLeftButtonPressed,
+                IsMiddlePointerButtonPressed = MouseMiddleButtonPressed
+            });
         }
 
         private void Canvas_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             Windows.UI.Input.PointerPoint point = e.GetCurrentPoint((UIElement)sender);
-            MouseRightButton = point.Properties.IsRightButtonPressed;
-            MouseLeftButton = point.Properties.IsLeftButtonPressed;
+            MouseRightButtonPressed = point.Properties.IsRightButtonPressed;
+            MouseLeftButtonPressed = point.Properties.IsLeftButtonPressed;
+            MouseMiddleButtonPressed = point.Properties.IsMiddleButtonPressed;
         }
 
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedEndpoint != null)
             {
-                _inputSender.Connect(SelectedEndpoint);
-                IsInputTransmitterConnected = _inputSender.Connected;
-
-
+                _commandTransmitter.Connect(SelectedEndpoint);
+                IsInputTransmitterConnected = _commandTransmitter.Connected;
             }
         }
 
+        private void SendMovePointerCommand(MovePointerCommandArgs args)
+        {
+            _commandTransmitter.SendCommand(CommandType.MovePointer, args);
+        }
+
+        private void SendUpdatePointerStateCommand(PointerUpdateStateCommandArgs args)
+        {
+            _commandTransmitter.SendCommand(CommandType.UpdatePointerState, args);
+        }
     }
+
 }

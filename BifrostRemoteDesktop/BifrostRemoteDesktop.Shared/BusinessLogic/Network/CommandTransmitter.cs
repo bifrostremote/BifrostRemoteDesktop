@@ -1,9 +1,12 @@
 ﻿using BifrostRemote.Network;
+using BifrostRemoteDesktop.BusinessLogic.Models.Commands;
+using BifrostRemoteDesktop.BusinessLogic.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net.Sockets;
 using System.Text;
+using static BifrostRemoteDesktop.BusinessLogic.Factories.CommandFactory;
 
 namespace BifrostRemoteDesktop.BusinessLogic.Network
 {
@@ -14,12 +17,14 @@ namespace BifrostRemoteDesktop.BusinessLogic.Network
 
         public bool Connected => (_tcp == null) ? false : _tcp.Connected;
 
-        public CommandTransmitter()
+        public bool SendCommand(CommandType type, RemoteControlCommandArgs commandArgs)
         {
-
+            string args = string.Join(TransmissionContext.TEXT_SEGMENTATION_CHAR, commandArgs);
+            string message = string.Join("", type, TransmissionContext.TEXT_SEGMENTATION_CHAR, args);
+            return Send(message);
         }
 
-        public bool Send(string data)
+        private bool Send(string data)
         {
             if (Connected)
             {
@@ -37,7 +42,7 @@ namespace BifrostRemoteDesktop.BusinessLogic.Network
 
         private string PackData(string data)
         {
-            return $"{Context.START_OF_TEXT_CHR}{data}{Context.END_OF_TEXT_CHR}";
+            return string.Join("", TransmissionContext.START_OF_TEXT_CHAR, data, TransmissionContext.END_OF_TEXT_CHAR);
         }
 
         public void Connect(string remoteHostname)
@@ -53,7 +58,7 @@ namespace BifrostRemoteDesktop.BusinessLogic.Network
 
                 _tcp.Close();
             }
-            _tcp.Connect(remoteHostname, port: Context.INPUT_TCP_PORT);
+            _tcp.Connect(remoteHostname, port: TransmissionContext.INPUT_TCP_PORT);
 
         }
 

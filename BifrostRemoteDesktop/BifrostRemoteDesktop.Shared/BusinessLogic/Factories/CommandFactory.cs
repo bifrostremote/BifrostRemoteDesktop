@@ -10,8 +10,7 @@ namespace BifrostRemoteDesktop.BusinessLogic.Factories
         public enum CommandType
         {
             MovePointer,
-            PointerClickLeft,
-            PointerClickRight
+            UpdatePointerState
         }
 
         public static ICommand CreateCommand(CommandType commandType, string[] commandArgs, ISystemController _systemController)
@@ -32,7 +31,7 @@ namespace BifrostRemoteDesktop.BusinessLogic.Factories
 
         public static MovePointerCommand CreateMovePointerCommand(string[] commandArgs, ISystemController systemController)
         {
-            ArgumentException wrongArgumentsException = new ArgumentException($"The length of {nameof(commandArgs)} is not adequate for creating a ${nameof(MovePointerCommand)}. Two doubles needs to be provided.");
+            ArgumentException nonsufficientArgumentsException = new ArgumentException($"The length of {nameof(commandArgs)} is not adequate for creating a ${nameof(MovePointerCommand)}. Two doubles needs to be provided.");
             if (commandArgs.Length == 2)
             {
                 double x;
@@ -44,12 +43,12 @@ namespace BifrostRemoteDesktop.BusinessLogic.Factories
                 }
                 else
                 {
-                    throw wrongArgumentsException;
+                    throw nonsufficientArgumentsException;
                 }
             }
             else
             {
-                throw wrongArgumentsException;
+                throw nonsufficientArgumentsException;
             }
         }
     }

@@ -23,13 +23,18 @@
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Factories\CommandFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\ICommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\ISystemController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\MovePointerCommandArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\PointerUpdateStateCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\PointerUpdateStateCommandArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\RemoteControlCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\RemoteControlCommandArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\LPPoint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\MovePointerCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\Context.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\TransmissionContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\CommandReceiver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\CommandTransmitter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\UIControl\NativeUIController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Utils\ArrayUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\TransmitterClient.xaml.cs">
       <DependentUpon>TransmitterClient.xaml</DependentUpon>
     </Compile>

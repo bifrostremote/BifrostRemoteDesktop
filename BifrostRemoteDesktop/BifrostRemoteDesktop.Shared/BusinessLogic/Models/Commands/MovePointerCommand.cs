@@ -5,7 +5,7 @@ using System.Text;
 namespace BifrostRemoteDesktop.BusinessLogic.Models.Commands
 {
 
-    public class MovePointerCommand : RemoteControlCommand
+    public class MovePointerCommand : RemoteControlCommand<MovePointerCommandArgs>
     {
         public MovePointerCommand(ISystemController systemController, double x, double y) : base(systemController)
         {
