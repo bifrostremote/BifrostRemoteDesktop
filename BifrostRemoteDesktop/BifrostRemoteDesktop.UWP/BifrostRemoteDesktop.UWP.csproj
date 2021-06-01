@@ -138,7 +138,6 @@
   <ItemGroup>
     <Compile Include="BusinessLogic\Controls\UWPPointerController.cs" />
     <Compile Include="BusinessLogic\Controls\PointerProvider.UWP.cs" />
-    <Compile Include="BusinessLogic\UIControl\NativeUIController.UWP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
