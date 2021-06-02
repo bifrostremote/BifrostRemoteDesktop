@@ -20,25 +20,40 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\IPointerController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\PointerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Enums\CommandType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Factories\CommandFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\ICommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\ISystemController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\MovePointerCommandArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\PointerUpdateStateCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\PointerUpdateStateCommandArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\RemoteControlCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\RemoteControlCommandArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\MovePointerCommand\MovePointerCommandArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\PointerUpdateStateCommand\PointerUpdateStateCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\PointerUpdateStateCommand\PointerUpdateStateCommandArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\RemoteControlCommand\RemoteControlCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\RemoteControlCommand\RemoteControlCommandArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\LPPoint.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\MovePointerCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\MovePointerCommand\MovePointerCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\TransmissionContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\CommandReceiver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Network\CommandTransmitter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Utils\ArrayUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\ReceiverClient.xaml.cs">
+      <DependentUpon>ReceiverClient.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Pages\TransmitterClient.xaml.cs">
       <DependentUpon>TransmitterClient.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Pages\ReceiverClient.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Pages\TransmitterClient.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -49,5 +64,10 @@
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Resources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\MovePointerCommand\" />
+    <Folder Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\RemoteControlCommand\" />
+    <Folder Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\PointerUpdateStateCommand\" />
   </ItemGroup>
 </Project>

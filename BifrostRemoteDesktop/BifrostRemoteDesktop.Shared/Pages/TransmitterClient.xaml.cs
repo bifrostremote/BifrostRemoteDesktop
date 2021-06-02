@@ -1,4 +1,5 @@
 ﻿using BifrostRemote.Network;
+using BifrostRemoteDesktop.BusinessLogic.Enums;
 using BifrostRemoteDesktop.BusinessLogic.Models;
 using BifrostRemoteDesktop.BusinessLogic.Models.Commands;
 using BifrostRemoteDesktop.BusinessLogic.Network;
@@ -12,6 +13,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -19,12 +21,12 @@ using static BifrostRemoteDesktop.BusinessLogic.Factories.CommandFactory;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
-namespace BifrostRemoteDesktop
+namespace BifrostRemoteDesktop.Pages
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page, INotifyPropertyChanged
+    public sealed partial class TransmitterClientPage : Page, INotifyPropertyChanged
     {
 
         private double _mouseX;
@@ -100,7 +102,7 @@ namespace BifrostRemoteDesktop
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public MainPage()
+        public TransmitterClientPage()
         {
             LoadAvailableEndpoints();
             this.InitializeComponent();
@@ -129,36 +131,31 @@ namespace BifrostRemoteDesktop
             };
         }
 
-        private void Canvas_PointerMoved(object sender, PointerRoutedEventArgs e)
+        private void UpdateViewPointerDetails(PointerPoint point)
         {
-            Windows.UI.Input.PointerPoint point = e.GetCurrentPoint((UIElement)sender);
-            MouseX = point.Position.X;
-            MouseY = point.Position.Y;
-
-            SendMovePointerCommand(new MovePointerCommandArgs() { TargetX = MouseX, TargetY = MouseY });
-        }
-
-        private void Canvas_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            Windows.UI.Input.PointerPoint point = e.GetCurrentPoint((UIElement)sender);
             MouseRightButtonPressed = point.Properties.IsRightButtonPressed;
             MouseLeftButtonPressed = point.Properties.IsLeftButtonPressed;
             MouseMiddleButtonPressed = point.Properties.IsMiddleButtonPressed;
+        }
 
+        private void SendMovePointerCommand(MovePointerCommandArgs args)
+        {
+            _commandTransmitter.SendCommand(CommandType.MovePointer, args);
+        }
+
+        private void SendUpdatePointerStateCommand(PointerUpdateStateCommandArgs args)
+        {
+            _commandTransmitter.SendCommand(CommandType.UpdatePointerState, args);
+        }
+
+        private void SendUpdatePointerStateCommand(PointerPoint point)
+        {
             SendUpdatePointerStateCommand(new PointerUpdateStateCommandArgs()
             {
-                IsLeftPointerButtonPressed = MouseLeftButtonPressed,
-                IsRightPointerButtonPressed = MouseLeftButtonPressed,
-                IsMiddlePointerButtonPressed = MouseMiddleButtonPressed
+                IsLeftPointerButtonPressed = point.Properties.IsLeftButtonPressed,
+                IsRightPointerButtonPressed = point.Properties.IsRightButtonPressed,
+                IsMiddlePointerButtonPressed = point.Properties.IsMiddleButtonPressed
             });
-        }
-
-        private void Canvas_PointerReleased(object sender, PointerRoutedEventArgs e)
-        {
-            Windows.UI.Input.PointerPoint point = e.GetCurrentPoint((UIElement)sender);
-            MouseRightButtonPressed = point.Properties.IsRightButtonPressed;
-            MouseLeftButtonPressed = point.Properties.IsLeftButtonPressed;
-            MouseMiddleButtonPressed = point.Properties.IsMiddleButtonPressed;
         }
 
         private void Connect_Click(object sender, RoutedEventArgs e)
@@ -170,14 +167,27 @@ namespace BifrostRemoteDesktop
             }
         }
 
-        private void SendMovePointerCommand(MovePointerCommandArgs args)
+        private void Canvas_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            _commandTransmitter.SendCommand(CommandType.MovePointer, args);
+            PointerPoint point = e.GetCurrentPoint((UIElement)sender);
+            MouseX = point.Position.X;
+            MouseY = point.Position.Y;
+
+            SendMovePointerCommand(new MovePointerCommandArgs() { TargetX = MouseX, TargetY = MouseY });
         }
 
-        private void SendUpdatePointerStateCommand(PointerUpdateStateCommandArgs args)
+        private void Canvas_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            _commandTransmitter.SendCommand(CommandType.UpdatePointerState, args);
+            PointerPoint point = e.GetCurrentPoint((UIElement)sender);
+            UpdateViewPointerDetails(point);
+            SendUpdatePointerStateCommand(point);
+        }
+
+        private void Canvas_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            PointerPoint point = e.GetCurrentPoint((UIElement)sender);
+            UpdateViewPointerDetails(point);
+            SendUpdatePointerStateCommand(point);
         }
     }
 

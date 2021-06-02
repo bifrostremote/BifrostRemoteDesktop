@@ -30,7 +30,7 @@ namespace BifrostRemoteDesktop.BusinessLogic
             }
             else
             {
-                //TODO: Narrow Exception Type.
+                // TODO: Narrow Exception Type.
                 throw new Exception("LPPoint was not available through user32.dll");
             }
         }
