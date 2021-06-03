@@ -20,11 +20,7 @@ namespace BifrostRemoteDesktop.BusinessLogic.Network
         /// Connection Failed. No receiver found.
         /// </summary>
         public event EventHandler NoReceiverFound;
-
-        public void OnNoReceiverFound(EventArgs e)
-        {
-            NoReceiverFound?.Invoke(this, e);
-        }
+        public event EventHandler ConnectionEstablished;
 
         public bool SendCommand(CommandType type, RemoteControlCommandArgs commandArgs)
         {
@@ -81,9 +77,11 @@ namespace BifrostRemoteDesktop.BusinessLogic.Network
             catch (SocketException)
             {
                 Debug.WriteLine("No receiver available.");
-                OnNoReceiverFound(EventArgs.Empty);
+                NoReceiverFound?.Invoke(this, EventArgs.Empty);
+                return;
             }
 
+            ConnectionEstablished?.Invoke(this, EventArgs.Empty);
         }
 
         public void Disconnect()

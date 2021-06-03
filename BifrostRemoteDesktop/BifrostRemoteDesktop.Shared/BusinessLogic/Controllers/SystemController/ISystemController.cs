@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BifrostRemoteDesktop.BusinessLogic.Models.Commands
+namespace BifrostRemoteDesktop.BusinessLogic.Controllers
 {
     public interface ISystemController
     {

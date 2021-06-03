@@ -1,4 +1,5 @@
 ﻿using BifrostRemote.Network;
+using BifrostRemoteDesktop.BusinessLogic.Controllers;
 using BifrostRemoteDesktop.BusinessLogic.Enums;
 using BifrostRemoteDesktop.BusinessLogic.Models;
 using BifrostRemoteDesktop.BusinessLogic.Models.Commands;
@@ -38,6 +39,7 @@ namespace BifrostRemoteDesktop.Pages
         private string _selectedEndpoint;
 
         private CommandTransmitter _commandTransmitter;
+        private string _connectionStatus;
 
         public string SelectedEndpoint
         {
@@ -98,7 +100,15 @@ namespace BifrostRemoteDesktop.Pages
         }
 
         public ObservableCollection<string> AvailableEndpoints { get; set; }
-        public bool IsInputTransmitterConnected { get; set; }
+
+        public string ConnectionStatus
+        {
+            get => _connectionStatus; set
+            {
+                _connectionStatus = value;
+                NotifyPropertyChanged(nameof(ConnectionStatus));
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -107,14 +117,39 @@ namespace BifrostRemoteDesktop.Pages
             LoadAvailableEndpoints();
             this.InitializeComponent();
 
-            //new Thread(InputNetworkReceiver.StartReceiver).Start();
-
             _commandTransmitter = new CommandTransmitter();
 
             if (AvailableEndpoints.Count > 0)
             {
                 SelectedEndpoint = AvailableEndpoints[0];
             }
+
+            BindEvents();
+            ConnectionStatus = "Not initialized.";
+
+            //DEBUG
+            new CommandReceiver(
+                  new SystemControllerProvider()
+                  .GetPlatformSystemController())
+                .Start(); ;
+
+        }
+
+        private void BindEvents()
+        {
+            _commandTransmitter.NoReceiverFound += (s, e) =>
+            {
+                ConnectionStatus = "No receiver found!";
+            };
+
+            _commandTransmitter.ConnectionEstablished += (s, e) =>
+            {
+                ConnectionStatus = "Connection Established!";
+            };
+        }
+
+        private void _commandTransmitter_NoReceiverFound(object sender, EventArgs e)
+        {
         }
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
@@ -163,7 +198,6 @@ namespace BifrostRemoteDesktop.Pages
             if (SelectedEndpoint != null)
             {
                 _commandTransmitter.Connect(SelectedEndpoint);
-                IsInputTransmitterConnected = _commandTransmitter.Connected;
             }
         }
 

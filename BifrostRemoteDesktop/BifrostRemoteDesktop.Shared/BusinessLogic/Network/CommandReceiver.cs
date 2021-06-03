@@ -1,4 +1,5 @@
 ﻿using BifrostRemote.Network;
+using BifrostRemoteDesktop.BusinessLogic.Controllers;
 using BifrostRemoteDesktop.BusinessLogic.Enums;
 using BifrostRemoteDesktop.BusinessLogic.Factories;
 using BifrostRemoteDesktop.BusinessLogic.Models;
@@ -28,16 +29,19 @@ namespace BifrostRemoteDesktop.BusinessLogic.Network
 
         public void Start()
         {
-            if (!thread.IsAlive)
+            if (thread == null)
             {
                 thread = new Thread(Listen);
+            }
+            if (!thread.IsAlive)
+            {
                 thread.Start(this);
             }
         }
 
-        private void Stop()
+        public void Stop()
         {
-            if (thread.IsAlive)
+            if (thread != null && thread.IsAlive)
             {
                 thread.Join();
             }
@@ -63,13 +67,13 @@ namespace BifrostRemoteDesktop.BusinessLogic.Network
                     while ((i = stream.Read(buffer, 0, buffer.Length)) != 0)
                     {
                         data += Encoding.UTF8.GetString(buffer, 0, i);
-                        if (TryFindAndRemoveNextPackage(ref data, out string package))
+                        while (TryFindAndRemoveNextPackage(ref data, out string package))
                         {
-
+                            ICommand command = ParseCommandFromPackage(
+                                commandReceiver, package);
+                            command.Execute();
                         }
 
-                        ICommand command = ParseCommandFromPackage(commandReceiver, package);
-                        command.Execute();
                     }
 
                     receiver.Close();
@@ -84,7 +88,7 @@ namespace BifrostRemoteDesktop.BusinessLogic.Network
         /// <param name="data">The data string to attempt package extraction on.</param>
         /// <param name="package">The found package. (string.Empty if no package is found.)</param>
         /// <returns>Returns true if a package was found.</returns>
-        private static bool TryFindAndRemoveNextPackage(ref string data, out string package)
+        public static bool TryFindAndRemoveNextPackage(ref string data, out string package)
         {
             int startCharIndex = data.IndexOf(TransmissionContext.START_OF_TEXT_CHAR) + 1;
             int endCharIndex = data.IndexOf(TransmissionContext.END_OF_TEXT_CHAR, startCharIndex) - 1;
@@ -97,21 +101,24 @@ namespace BifrostRemoteDesktop.BusinessLogic.Network
             }
 
             int packageSize = endCharIndex - startCharIndex;
-            package = data.Substring(startCharIndex, packageSize);
+            package = data.Substring(startCharIndex, packageSize+1);
             data = data.Remove(startCharIndex - 1, packageSize + 1);
             return true;
         }
 
-        private static ICommand ParseCommandFromPackage(CommandReceiver commandReceiver, string package)
+        public static ICommand ParseCommandFromPackage(CommandReceiver commandReceiver, string package)
         {
             string[] parts = package.Split(TransmissionContext.TEXT_SEGMENTATION_CHAR);
 
-            if(!Enum.TryParse(parts[0], out CommandType commandType))
+            if (!Enum.TryParse(parts[0], out CommandType commandType))
             {
                 throw new InvalidCastException();
             }
 
-            RemoteControlCommandArgs commandArgs = JsonConvert.DeserializeObject<RemoteControlCommandArgs>(parts[1]);
+            RemoteControlCommandArgs commandArgs = JsonConvert.DeserializeObject<MovePointerCommandArgs>(parts[1], new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.All
+            });
             ICommand command = CommandFactory.CreateCommand(commandType, commandArgs, commandReceiver._systemController);
             return command;
         }

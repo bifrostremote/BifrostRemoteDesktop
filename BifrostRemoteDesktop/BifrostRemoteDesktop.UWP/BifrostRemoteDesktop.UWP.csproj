@@ -136,8 +136,10 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusinessLogic\Controls\UWPPointerController.cs" />
-    <Compile Include="BusinessLogic\Controls\PointerProvider.UWP.cs" />
+    <Compile Include="BusinessLogic\Controllers\PointerController\UWPPointerController.cs" />
+    <Compile Include="BusinessLogic\Controllers\PointerController\PointerProvider.UWP.cs" />
+    <Compile Include="BusinessLogic\Controllers\SystemController\SystemControllerProvider.UWP.cs" />
+    <Compile Include="BusinessLogic\Controllers\SystemController\UWPSystemController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BifrostRemoteDesktop.BusinessLogic.Controllers;
+using System;
 
 namespace BifrostRemoteDesktop.BusinessLogic.Models.Commands
 {

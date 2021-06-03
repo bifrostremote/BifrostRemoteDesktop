@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+﻿using BifrostRemoteDesktop.BusinessLogic.Controllers;
+using BifrostRemoteDesktop.BusinessLogic.Network;
+using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -22,19 +13,24 @@ namespace BifrostRemoteDesktop.Pages
     /// </summary>
     public sealed partial class ReceiverClientPage : Page
     {
+        private CommandReceiver _commandReceiver;
+
         public ReceiverClientPage()
         {
             this.InitializeComponent();
+
+            _commandReceiver = new CommandReceiver(
+                new SystemControllerProvider().GetPlatformSystemController());
         }
 
         private void Start_Server_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            _commandReceiver.Start();
         }
 
         private void Stop_Server_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+
         }
     }
 }

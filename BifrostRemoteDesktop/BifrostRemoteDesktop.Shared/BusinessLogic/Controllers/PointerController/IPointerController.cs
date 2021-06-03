@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BifrostRemoteDesktop.BusinessLogic
+namespace BifrostRemoteDesktop.BusinessLogic.Controllers
 {
     public interface IPointerController
     {

@@ -18,12 +18,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\IPointerController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\PointerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\PointerController\IPlatformPointerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\PointerController\IPointerController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\SystemController\ISystemControllerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\PointerController\PointerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\SystemController\SystemControllerProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Enums\CommandType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Factories\CommandFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\ICommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\ISystemController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\SystemController\ISystemController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\MovePointerCommand\MovePointerCommandArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\PointerUpdateStateCommand\PointerUpdateStateCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\PointerUpdateStateCommand\PointerUpdateStateCommandArgs.cs" />
@@ -66,6 +69,8 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\SystemController\" />
+    <Folder Include="$(MSBuildThisFileDirectory)BusinessLogic\Controllers\PointerController\" />
     <Folder Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\MovePointerCommand\" />
     <Folder Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\RemoteControlCommand\" />
     <Folder Include="$(MSBuildThisFileDirectory)BusinessLogic\Models\Commands\PointerUpdateStateCommand\" />

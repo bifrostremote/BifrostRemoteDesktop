@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BifrostRemoteDesktop.BusinessLogic
+namespace BifrostRemoteDesktop.BusinessLogic.Controllers
 {
     public class UWPPointerController : IPointerController
     {

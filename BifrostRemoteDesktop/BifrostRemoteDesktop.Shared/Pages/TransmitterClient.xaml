@@ -39,10 +39,10 @@
             <StackPanel>
                 <TextBlock Text="Select Endpoint"/>
                 <ComboBox ItemsSource="{Binding AvailableEndpoints}" SelectedItem="{Binding SelectedEndpoint, Mode=TwoWay}"/>
-                <Button Content="Connect" Click="Connect_Click"/>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Connected:"/>
-                    <TextBlock Text="{Binding IsInputTransmitterConnected}"/>
+                <Button Content="Connect" Click="Connect_Click"/>
+                    <TextBlock Text="Connection Status:"/>
+                    <TextBlock Text="{Binding ConnectionStatus, Mode=OneWay}"/>
                 </StackPanel>
             </StackPanel>
         </StackPanel>
