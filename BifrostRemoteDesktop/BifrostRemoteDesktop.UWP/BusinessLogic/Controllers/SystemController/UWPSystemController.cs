@@ -8,16 +8,16 @@ namespace BifrostRemoteDesktop.BusinessLogic.Controllers.SystemController
 {
     class UWPSystemController : ISystemController
     {
-        private UWPPointerController _pointerProvider;
+        private UWPPointerController _pointer;
 
         public UWPSystemController()
         {
-            _pointerProvider = new UWPPointerController();
+            _pointer = new UWPPointerController();
         }
 
         public bool SetPointerPosition(double x, double y)
         {
-            _pointerProvider.SetCursorPosition((int)x, (int)y);
+            _pointer.SetCursorPosition((int)x, (int)y);
             return true;
         }
 

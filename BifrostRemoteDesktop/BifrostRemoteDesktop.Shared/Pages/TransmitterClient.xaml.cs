@@ -185,12 +185,13 @@ namespace BifrostRemoteDesktop.Pages
 
         private void SendUpdatePointerStateCommand(PointerPoint point)
         {
-            SendUpdatePointerStateCommand(new PointerUpdateStateCommandArgs()
+            // TODO: UNCOMMENT AND FIX THIS!!!
+            /*SendUpdatePointerStateCommand(new PointerUpdateStateCommandArgs()
             {
                 IsLeftPointerButtonPressed = point.Properties.IsLeftButtonPressed,
                 IsRightPointerButtonPressed = point.Properties.IsRightButtonPressed,
                 IsMiddlePointerButtonPressed = point.Properties.IsMiddleButtonPressed
-            });
+            });*/
         }
 
         private void Connect_Click(object sender, RoutedEventArgs e)

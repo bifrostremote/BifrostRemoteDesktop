@@ -90,19 +90,24 @@ namespace BifrostRemoteDesktop.BusinessLogic.Network
         /// <returns>Returns true if a package was found.</returns>
         public static bool TryFindAndRemoveNextPackage(ref string data, out string package)
         {
-            int startCharIndex = data.IndexOf(TransmissionContext.START_OF_TEXT_CHAR) + 1;
-            int endCharIndex = data.IndexOf(TransmissionContext.END_OF_TEXT_CHAR, startCharIndex) - 1;
+            int startCharIndex = data.IndexOf(TransmissionContext.START_OF_TEXT_CHAR);
+            if (startCharIndex == -1)
+            {
+                package = string.Empty;
+                return false;
+            }
 
-            //Check data for complete package.
-            if (startCharIndex == -1 || endCharIndex == -1)
+            int endCharIndex = data.IndexOf(TransmissionContext.END_OF_TEXT_CHAR, startCharIndex);
+
+            if (endCharIndex == -1)
             {
                 package = string.Empty;
                 return false;
             }
 
             int packageSize = endCharIndex - startCharIndex;
-            package = data.Substring(startCharIndex, packageSize+1);
-            data = data.Remove(startCharIndex - 1, packageSize + 1);
+            package = data.Substring(startCharIndex + 1, packageSize - 1);
+            data = data.Remove(startCharIndex, packageSize);
             return true;
         }
 
@@ -115,7 +120,7 @@ namespace BifrostRemoteDesktop.BusinessLogic.Network
                 throw new InvalidCastException();
             }
 
-            RemoteControlCommandArgs commandArgs = JsonConvert.DeserializeObject<MovePointerCommandArgs>(parts[1], new JsonSerializerSettings()
+            RemoteControlCommandArgs commandArgs = JsonConvert.DeserializeObject<RemoteControlCommandArgs>(parts[1], new JsonSerializerSettings()
             {
                 TypeNameHandling = TypeNameHandling.All
             });
