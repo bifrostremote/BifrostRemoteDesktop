@@ -17,7 +17,7 @@ namespace BifrostRemoteDesktop.BusinessLogic.Controllers.SystemController
 
         public bool SetPointerPosition(double x, double y)
         {
-            _pointer.SetCursorPosition((int)x, (int)y);
+            _pointer.SetCursorPosition(x, y);
             return true;
         }
 

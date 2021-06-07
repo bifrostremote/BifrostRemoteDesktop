@@ -21,6 +21,9 @@ namespace BifrostRemoteDesktop.BusinessLogic.Controllers
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool SetCursorPos(int x, int y);
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern uint GetLastError();
+
         public LPPoint GetCursorPosition()
         {
             LPPoint point;
@@ -38,6 +41,12 @@ namespace BifrostRemoteDesktop.BusinessLogic.Controllers
         public void SetCursorPosition(int x, int y)
         {
             SetCursorPos(x, y);
+        }
+
+        public void SetCursorPosition(double x, double y)
+        {
+            var a = SetCursorPos(Convert.ToInt32(x), Convert.ToInt32(y));
+            var b = GetLastError();
         }
     }
 }
